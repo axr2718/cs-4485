@@ -18,7 +18,7 @@ def deidentify_PHI(text):
     # For DOB
     text = re.sub(r'Date of Birth:\s*(\d{2}/\d{2}/\d{4})', r'Date of Birth: *dob*', text)
     
-    # For SSN
+    # For Medical Record Number 
     text = re.sub(r'Medical Record Number:\s*(\d+)', r'Medical Record Number: *ssn*', text)
     
     # For Phone Number
