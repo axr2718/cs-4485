@@ -18,7 +18,7 @@ def deidentify_PHI(text):
     # For DOB
     text = re.sub(r'Date of Birth:\s*(\d{2}/\d{2}/\d{4})', r'Date of Birth: *dob*', text)
     
-    # For Medical Record Number 
+    # For Medical Record Number
     text = re.sub(r'Medical Record Number:\s*(\d+)', r'Medical Record Number: *ssn*', text)
     
     # For Phone Number
@@ -31,12 +31,14 @@ def deidentify_PHI(text):
 
 
 # %%
-with open('ehr JMS.txt', 'r') as file:
+ehr_file = 'ehr JMS.txt'
+
+with open(ehr_file, 'r') as file:
     text = file.read()
 
-with open('deidentified_ehrJMS.txt', 'w') as file:
+with open(f"De-Identified_{ehr_file}", 'w') as file:
     file.write(deidentify_PHI(text))
 
-print("De-identification complete. Output saved to 'deidentified_ehrJMS.txt'.")
+print(f"De-identification complete. Output saved to De-Identified_{ehr_file}.")
 
 # %%
