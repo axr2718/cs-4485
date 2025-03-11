@@ -1,6 +1,6 @@
 Patient: *name*
 Date of Birth: *dob*
-Medical Record Number: *ssn*
+Medical Record Number: *mrn*
 Date of Visit: 10/26/2023
 Address: *address*
 Phone: *phone*
