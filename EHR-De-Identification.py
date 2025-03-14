@@ -3,7 +3,7 @@ import re
 
 # %%
 def deidentify_PHI(text):
-    # For Full Name
+    # For Patient Name
     text = re.sub(r'Patient:\s*([A-Z][a-z]+ [A-Z][a-z]+)', r'Patient: *name*', text)
     
     # For Provider Name
