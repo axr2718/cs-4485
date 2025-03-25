@@ -47,3 +47,4 @@ python3 EHR-De-Identification.py
 - Ensure you have Python 3 installed on your system.
 - Double-check file names and paths to avoid errors.
 - Consider making a backup of your original file before running the script.
+- To confirm the script is running, open the de-identified file and verify PHI has been replaced. 
