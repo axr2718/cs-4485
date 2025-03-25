@@ -24,8 +24,7 @@ def deidentify_PHI(text):
     text = re.sub(r'SSN:\s*(?:\d{3}-\d{2}-\d{4}|\*{3}-\*\d-\d{4})', r'SSN: *ssn*', text)
     
     # Phone Numbers (more comprehensive)
-    text = re.sub(r'Phone:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', r'Phone: *phone*', text)
-    text = re.sub(r'\d{3}-\d{3}-\d{4}', '*phone*', text)  # Catch any remaining phone numbers
+    text = re.sub(r'(Phone:\s*)?(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 'Phone: *phone*', text)
     
     # Email Addresses (more comprehensive)
     text = re.sub(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', r'Email: *email*', text)
