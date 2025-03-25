@@ -1,9 +1,9 @@
 # EHR De-Identification Tool
 
-## Description
+## 📌 Description
 This application enables users to de-identify text files containing Protected Health Information (PHI) efficiently and securely. It reads a given PHI-containing file, processes the text to remove or anonymize identifiable information (as specified in PHI.txt), and saves a de-identified version in the same directory.
 
-## How to Use
+## 🛠 How to Use
 
 Follow these steps to use the EHR De-Identification tool:
 
@@ -46,4 +46,4 @@ python3 EHR-De-Identification.py
 ## Notes
 - Ensure you have Python 3 installed on your system.
 - Double-check file names and paths to avoid errors.
-
+- Consider making a backup of your original file before running the script.
