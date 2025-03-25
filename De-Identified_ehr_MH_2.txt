@@ -16,7 +16,7 @@ Social worker: *name*
 
 Chief Complaint: "Persistent joint pain and morning stiffness for the past month."
 
-History of Present Illness (HPI):*name* presents with complaints of progressive joint pain and stiffness, predominantly affecting her hands, wrists, and knees. The symptoms are most pronounced in the morning, lasting approximately 45 minutes before easing slightly with movement. She reports mild swelling in her fingers and occasional warmth around the joints. No known triggers or recent injuries. Over-the-counter NSAIDs provide limited relief. No associated fever, chills, or weight loss.
+History of Present Illness (HPI):*name* presents with complaints of progressive joint pain and stiffness, predominantly affecting her hands, wrists, and knees. The symptoms are most pronounced in the morning, lasting approximately 45 minutes before easing slightly with movement. They reports mild swelling in her fingers and occasional warmth around the joints. No known triggers or recent injuries. Over-the-counter NSAIDs provide limited relief. No associated fever, chills, or weight loss.
 
 Past Medical History (PMH):
 - Hypothyroidism (diagnosed 2015)

@@ -43,6 +43,10 @@ def deidentify_PHI(text):
     # Lab Results (complete section)
     text = re.sub(r'Lab Results.*?(?=\n\n|\Z)', r'Lab Results: *results*', text, flags=re.DOTALL)
     
+    # Replace gender-specific pronouns with "they"
+    text = re.sub(r'\b(She|He)\b', 'They', text)
+    text = re.sub(r'\b(she|he)\b', 'they', text)
+
     return text
 
 
