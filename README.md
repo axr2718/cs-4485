@@ -1,7 +1,7 @@
 # EHR De-Identification Tool
 
 ## Description
-This application allows users to de-identify text files containing Protected Health Information (PHI). The tool reads a given PHI file, processes it to remove identifiable information, and saves a de-identified version in the same directory.
+This application enables users to de-identify text files containing Protected Health Information (PHI) efficiently and securely. It reads a given PHI-containing file, processes the text to remove or anonymize identifiable information (as specified in PHI.txt), and saves a de-identified version in the same directory.
 
 ## How to Use
 
