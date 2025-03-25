@@ -48,3 +48,4 @@ python3 EHR-De-Identification.py
 - Double-check file names and paths to avoid errors.
 - Consider making a backup of your original file before running the script.
 - To confirm the script is running, open the de-identified file and verify PHI has been replaced. 
+- For accurate results, ensure your PHI file is clearly formatted and PHI terms in the PHI.txt file are up-to-date and accurate. 
