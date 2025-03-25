@@ -1,0 +1,12 @@
+Patient name:
+Address (including street address, city, state, and zip code)
+Date of birth or DoB
+Social Security number or SSN
+Email address
+Provider name
+Hospital name
+Allergies (Morphine; Sulfa drugs)
+Lab Results
+Medicaid Account
+Social Worker
+Phone

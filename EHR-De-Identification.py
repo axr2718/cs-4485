@@ -3,35 +3,51 @@ import re
 
 # %%
 def deidentify_PHI(text):
-    # For Patient Name
-    text = re.sub(r'Patient:\s*([A-Z][a-z]+ [A-Z][a-z]+)', r'Patient: *name*', text)
+    # Patient Name (including various formats)
+    text = re.sub(r'Patient name:\s*([A-Z][a-z]+ [A-Z][a-z]+)', r'Patient name: *name*', text)
+    text = re.sub(r'(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+ [A-Z][a-z]+', '*name*', text)
+    text = re.sub(r'(?:^|\s)(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+', '*name*', text)
+    text = re.sub(r'Ms\.\s*[A-Z][a-z]+', '*name*', text)  # Catch remaining name formats
     
-    # For Provider Name
-    text = re.sub(r'Provider:\s*Dr\.\s*([A-Z][a-z]+ [A-Z][a-z]+),\s*MD', r'Provider: Dr. *name*, MD', text)
+    # Provider Name and Details
+    text = re.sub(r'Provider name:\s*(?:Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+,?\s*(?:MD)?', r'Provider name: *name*, MD', text)
     
-    # For Salutations/Titles
-    text = re.sub(r'\b(Mr\.|Mrs\.|Ms\.|Dr\.)\s+[A-Z][a-z]+\b', '*name*', text)
+    # Hospital Name and Address
+    text = re.sub(r'Hospital name:\s*([A-Za-z0-9\s]+)', r'Hospital name: *hospital*', text)
+    text = re.sub(r'(?<=Hospital name: \*hospital\*):?\s*.*?(?=\n|$)', '', text)  # Remove hospital address
+    text = re.sub(r'Address:\s*.*?(?=\n|$)', 'Address: *address*', text)  # Any remaining addresses
     
-    # For Address
-    text = re.sub(r'Address:\s*([\d\w\s,\.]+\d{5})', r'Address: *address*', text)
+    # Date of Birth only
+    text = re.sub(r'(?:Date of Birth|DoB):\s*\d{2}/\d{2}/\d{4}', r'DoB: *dob*', text)
     
-    # For DOB
-    text = re.sub(r'Date of Birth:\s*(\d{2}/\d{2}/\d{4})', r'Date of Birth: *dob*', text)
+    # Social Security Number
+    text = re.sub(r'SSN:\s*(?:\d{3}-\d{2}-\d{4}|\*{3}-\*\d-\d{4})', r'SSN: *ssn*', text)
     
-    # For Medical Record Number
-    text = re.sub(r'Medical Record Number:\s*(\d+)', r'Medical Record Number: *mrn*', text)
+    # Phone Numbers (more comprehensive)
+    text = re.sub(r'Phone:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', r'Phone: *phone*', text)
+    text = re.sub(r'\d{3}-\d{3}-\d{4}', '*phone*', text)  # Catch any remaining phone numbers
     
-    # For Phone Number
-    text = re.sub(r'Phone:\s*(\d{3}-\d{3}-\d{4})', r'Phone: *phone*', text)
+    # Email Addresses (more comprehensive)
+    text = re.sub(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', r'Email: *email*', text)
+    text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '*email*', text)  # Catch any remaining email addresses
     
-    # For Email
-    text = re.sub(r'email:\s*([\w\.-]+@[\w\.-]+\.\w+)', r'email: *email*', text)
+    # Medicaid Account
+    text = re.sub(r'Medicaid account:\s*(\d+(?:\s+\d+)*)', r'Medicaid account: *medicaid*', text)
+    
+    # Social Worker
+    text = re.sub(r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', r'Social worker: *name*', text)
+    
+    # Allergies (complete section)
+    text = re.sub(r'Allergies:(?:\s*-[^\n]+\n?)*', 'Allergies: *allergies*\n', text)
+    
+    # Lab Results (complete section)
+    text = re.sub(r'Lab Results.*?(?=\n\n|\Z)', r'Lab Results: *results*', text, flags=re.DOTALL)
     
     return text
 
 
 # %%
-ehr_file = 'ehr JMS.txt'
+ehr_file = 'ehr_MH_2.txt'
 
 with open(ehr_file, 'r') as file:
     text = file.read()
