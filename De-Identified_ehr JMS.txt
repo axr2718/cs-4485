@@ -1,19 +1,18 @@
-Patient: *name*
-Date of Birth: *dob*
+Patient name: *name*
+DoB: *dob*
 Medical Record Number: *mrn*
 Date of Visit: 10/26/2023
 Address: *address*
 Phone: *phone*
-email: *email*
+Email: *email*
  
 
 
-Provider: Dr. *name*, MD
+Provider: *name*, MD
 
 Chief Complaint: "Persistent cough and shortness of breath for the past week."
 
-History of Present Illness (HPI):
-*name* presents to the clinic with a one-week history of a dry, hacking cough and progressive shortness of breath. He reports the cough began insidiously, initially mild, but has worsened over the past three days. He denies fever, chills, or night sweats. He describes the shortness of breath as a feeling of tightness in his chest, exacerbated by exertion. He has noticed a decrease in his exercise tolerance. He denies any recent travel or known exposures to sick individuals. He has tried over-the-counter cough suppressants with minimal relief.
+History of Present Illness (HPI):*name* presents to the clinic with a one-week history of a dry, hacking cough and progressive shortness of breath. They reports the cough began insidiously, initially mild, but has worsened over the past three days. They denies fever, chills, or night sweats. They describes the shortness of breath as a feeling of tightness in his chest, exacerbated by exertion. They has noticed a decrease in his exercise tolerance. They denies any recent travel or known exposures to sick individuals. They has tried over-the-counter cough suppressants with minimal relief.
 
 Past Medical History (PMH):
 
@@ -24,7 +23,8 @@ Medications:
 
 Albuterol inhaler (as needed)
 Fluticasone nasal spray (daily)
-Allergies:
+Allergies: *allergies*
+
 
 Penicillin (rash)
 Family History:
