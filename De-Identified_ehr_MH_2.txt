@@ -1,4 +1,4 @@
-Patient name: *name*
+Patient name: *name*Matelda Fox
 DoB: *dob*
 SSN: *ssn*
 Date of Visit: 03/07/2024
@@ -6,7 +6,7 @@ Address: *address*
 Phone: *phone*
 Email: *email*
 
-Provider name: *name*, MD
+Provider name: *name*, MD*name*, MD
 Hospital name: *hospital*
 Phone: *phone*
 Email: *email* 
