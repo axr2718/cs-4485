@@ -42,6 +42,10 @@ def deidentify_PHI(text):
     
     # Social Worker
     text = re.sub(r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', r'Social worker: *name*', text)
+
+    #sulfra drug (redact)
+    text = re.sub(r'-\s*Sulfa drugs\s*\(.*?\)', '- *sensitive_allergy*', text)
+
     # Allergies (complete section)
     text = re.sub(r'Allergies:(?:\s*-[^\n]+\n?)*', 'Allergies: *allergies*\n', text)
     
