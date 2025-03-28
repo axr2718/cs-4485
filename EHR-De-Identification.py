@@ -44,13 +44,13 @@ def deidentify_PHI(text):
     text = re.sub(r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', r'Social worker: *name*', text)
 
     #sulfra drug(e.g., Bactrium)
-    text = re.sub(r'-\s*Sulfa drugs\s*\(.*?\)', '- *sensitive_allergy*', text)
+    text = re.sub(r'-\s*Sulfa drugs\s*\(.*?\)', '*allergy*', text)
 
     # Morphine
-    text = re.sub(r'-\s*Morphine.*?(?=\n|$)', '- *sensitive_allergy*', text, flags=re.IGNORECASE)
+    text = re.sub(r'-\s*Morphine.*?(?=\n|$)', '*allergy*', text, flags=re.IGNORECASE)
 
     # Allergies (complete section)
-    text = re.sub(r'Allergies:(?:\s*-[^\n]+\n?)*', 'Allergies: *allergies*\n', text)
+    #text = re.sub(r'Allergies:(?:\s*-[^\n]+\n?)*', 'Allergies: *allergies*\n', text)
     
     # Lab Results (complete section)
     text = re.sub(r'Lab Results.*?(?=\n\n|\Z)', r'Lab Results: *results*', text, flags=re.DOTALL)
