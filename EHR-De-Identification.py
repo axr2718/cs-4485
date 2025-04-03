@@ -39,6 +39,9 @@ def deidentify_PHI(text):
     # Email Addresses (more comprehensive)
     text = re.sub(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', r'Email: *email*', text)
     text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '*email*', text)  # Catch any remaining email addresses
+
+    # Account Numbers
+    text = re.sub(r'Account:\s*\d+', r'Account: *account*', text)
     
     # Medicaid Account
     text = re.sub(r'Medicaid account:\s*(\d+(?:\s+\d+)*)', r'Medicaid account: *medicaid*', text)
