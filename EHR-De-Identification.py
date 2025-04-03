@@ -9,7 +9,7 @@ def deidentify_PHI(text):
     text = re.sub(r'(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+ [A-Z][a-z]+', '*name*', text)
     text = re.sub(r'(?:^|\s)(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+', '*name*', text)
     text = re.sub(r'Ms\.\s*[A-Z][a-z]+', '*name*', text)  # Catch remaining name formats
-    #Also just name
+    
     # Remove lines containing "Name"
     text = re.sub(r'Name:.*?$', r'Name: *name*', text)
     # Medical Record Number
@@ -33,6 +33,9 @@ def deidentify_PHI(text):
     text = re.sub(r'Phone:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 'Phone: *phone*', text) #replace phone numbers with "Phone" label
     text = re.sub(r'\b(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}\b', '*phone*', text) #replace phone numbers without label
     
+    # Fax Numbers 
+    text = re.sub(r'Fax number:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 'Fax number: *fax*', text) #replace fax numbers with "Fax" label 
+    
     # Email Addresses (more comprehensive)
     text = re.sub(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', r'Email: *email*', text)
     text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '*email*', text)  # Catch any remaining email addresses
@@ -43,7 +46,7 @@ def deidentify_PHI(text):
     # Social Worker
     text = re.sub(r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', r'Social worker: *name*', text)
 
-    #sulfra drug(e.g., Bactrium)
+    # Sulfa drugs (e.g., Bactrium)
     text = re.sub(r'-\s*Sulfa drugs\s*\(.*?\)', '*allergy*', text)
 
     # Morphine
@@ -59,15 +62,16 @@ def deidentify_PHI(text):
     text = re.sub(r'\b(She|He)\b', 'They', text)
     text = re.sub(r'\b(she|he)\b', 'they', text)
 
-    
     # Fix typo in rheumatology notes
-    text = re.sub(r'\becommended\b', 'Recommended', text)
+    # text = re.sub(r'\becommended\b', 'Recommended', text)
+    
+    
 
     return text
 
 
 # %%
-ehr_file = 'ehr_MH_2.txt'
+ehr_file = 'ehr EC 3 .txt'
 
 with open(ehr_file, 'r') as file:
     text = file.read()
