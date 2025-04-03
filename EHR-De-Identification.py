@@ -13,7 +13,6 @@ def deidentify_PHI(text):
     # Remove lines containing "Name"
     text = re.sub(r'Name:.*?$', r'Name: *name*', text)
     
-    
     # Medical Record Number
     text = re.sub(r'Medical Record Number:\s*\d+', r'Medical Record Number: *mrn*', text)
     
@@ -45,8 +44,11 @@ def deidentify_PHI(text):
     # Health Plan beneficiary numbers
     text = re.sub(r'Health plan beneficiary number:\s*[\d\-]+', r'Health plan beneficiary number: *beneficiary*', text, flags=re.IGNORECASE)
     
-    # Health Plan beneficiary numbers
-    text = re.sub(r'Health plan beneficiary number:\s*[\d\-]+', r'Health plan beneficiary number: *beneficiary*', text, flags=re.IGNORECASE)
+    # Health Insurance 
+    text = re.sub(r'Health Insurance:\s*[\d\-]+', r'Health Insurance: *health_insurance_no*', text, flags=re.IGNORECASE)
+    
+    # Group Number
+    text = re.sub(r'Group no.:\s*[\d\-]+', r'Group no.: *group_number*', text, flags=re.IGNORECASE)
     
     # Account Numbers
     text = re.sub(r'Account:\s*\d+', r'Account: *account*', text)
@@ -80,6 +82,12 @@ def deidentify_PHI(text):
     
     # Lab Results (complete section)
     text = re.sub(r'Lab Results.*?(?=\n\n|\Z)', r'Lab Results: *results*', text, flags=re.DOTALL)
+    
+    # IP Address
+    text = re.sub(r'IP Address:\s*(?:\d{1,3}\.){3}\d{1,3}', r'IP Address: *ip_address*', text)
+
+    # URL
+    text = re.sub(r'URL:\s*www?://[^\s]+', r'URL: *url*', text)
 
     return text
 
