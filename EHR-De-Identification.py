@@ -12,6 +12,7 @@ def deidentify_PHI(text):
     
     # Remove lines containing "Name"
     text = re.sub(r'Name:.*?$', r'Name: *name*', text)
+    
     # Medical Record Number
     text = re.sub(r'Medical Record Number:\s*\d+', r'Medical Record Number: *mrn*', text)
     
@@ -40,6 +41,9 @@ def deidentify_PHI(text):
     text = re.sub(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', r'Email: *email*', text)
     text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '*email*', text)  # Catch any remaining email addresses
 
+    # Health Plan beneficiary numbers
+    text = re.sub(r'Health plan beneficiary number:\s*[\d\-]+', r'Health plan beneficiary number: *beneficiary*', text, flags=re.IGNORECASE)
+    
     # Account Numbers
     text = re.sub(r'Account:\s*\d+', r'Account: *account*', text)
     
@@ -55,20 +59,20 @@ def deidentify_PHI(text):
     # Morphine
     text = re.sub(r'-\s*Morphine.*?(?=\n|$)', '*allergy*', text, flags=re.IGNORECASE)
 
-    # Allergies (complete section)
-    #text = re.sub(r'Allergies:(?:\s*-[^\n]+\n?)*', 'Allergies: *allergies*\n', text)
+    # Certificate Numbers
+    text = re.sub(r'Certificate number:\s*\d+', r'Certificate number: *certificate_number*', text)
+    
+    # License Numbers
+    text = re.sub(r'License number:\s*\d+', r'License number: *license_number*', text)
+
+    # Serial Numbers
+    text = re.sub(r'Pacemaker serial numbers:\s*\d+', r'Pacemaker serial numbers: *serial_number*', text)
+    
+    #Biometric identifiers
+    text = re.sub(r'Biometric:\s*.*?(?=\n|$)', 'Biometric: *biometric_identifier*', text, flags=re.IGNORECASE)
     
     # Lab Results (complete section)
     text = re.sub(r'Lab Results.*?(?=\n\n|\Z)', r'Lab Results: *results*', text, flags=re.DOTALL)
-    
-    # Replace gender-specific pronouns with "they"
-    text = re.sub(r'\b(She|He)\b', 'They', text)
-    text = re.sub(r'\b(she|he)\b', 'they', text)
-
-    # Fix typo in rheumatology notes
-    # text = re.sub(r'\becommended\b', 'Recommended', text)
-    
-    
 
     return text
 
