@@ -13,6 +13,7 @@ def deidentify_PHI(text):
     # Remove lines containing "Name"
     text = re.sub(r'Name:.*?$', r'Name: *name*', text)
     
+    
     # Medical Record Number
     text = re.sub(r'Medical Record Number:\s*\d+', r'Medical Record Number: *mrn*', text)
     
@@ -41,6 +42,9 @@ def deidentify_PHI(text):
     text = re.sub(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', r'Email: *email*', text)
     text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '*email*', text)  # Catch any remaining email addresses
 
+    # Health Plan beneficiary numbers
+    text = re.sub(r'Health plan beneficiary number:\s*[\d\-]+', r'Health plan beneficiary number: *beneficiary*', text, flags=re.IGNORECASE)
+    
     # Health Plan beneficiary numbers
     text = re.sub(r'Health plan beneficiary number:\s*[\d\-]+', r'Health plan beneficiary number: *beneficiary*', text, flags=re.IGNORECASE)
     
