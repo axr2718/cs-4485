@@ -70,9 +70,12 @@ def deidentify_PHI(text):
     text = re.sub(r'License number:\s*\d+', r'License number: *license_number*', text)
 
     # Serial Numbers
-    text = re.sub(r'Pacemaker serial numbers:\s*\d+', r'Pacemaker serial numbers: *serial_number*', text)
+    text = re.sub(r'serial numbers:\s*\d+', r'serial numbers: *serial_number*', text)
+
+    # Device Identifiers
+    text = re.sub(r'Device identifier:\s*.*?(?=\n|$)', 'Device identifier: *device_identifier*', text, flags=re.IGNORECASE)
     
-    #Biometric identifiers
+    # Biometric identifiers
     text = re.sub(r'Biometric:\s*.*?(?=\n|$)', 'Biometric: *biometric_identifier*', text, flags=re.IGNORECASE)
     
     # Lab Results (complete section)
