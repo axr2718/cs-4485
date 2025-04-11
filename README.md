@@ -36,13 +36,16 @@ Type the following command and press Enter:
 python3 main.py
 ```
 
-### 6. Retrieve the De-Identified File
+### 6. Retrieve the De-Identified or Re-Identified File
 1. Once the script finishes running, the de-identified file will be saved in the same directory.
 2. The output file will follow this naming format:
    ```
    De-Identified_PHIFileName.txt
    ```
-3. For example, if your original file was `ehr JMS.txt`, the de-identified file will be named `De-Identified_ehr JMS.txt`.
+3. If `re_identify` was set to `True`, then there will be a Re-Identified file as well.
+4. For example, if your original file was `ehr JMS.txt`, the de-identified file will be named `De-Identified_ehr JMS.txt`.
+
+A `json` file containing the mappings between the de-identified and original values will be stored as well.
 
 ## Notes
 - Ensure you have Python 3 installed on your system.
