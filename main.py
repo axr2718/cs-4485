@@ -281,3 +281,5 @@ if __name__ == "__main__":
     deidentified_file, mapping_file = process_ehr_file(ehr_file, de_identify=True)
     
     process_ehr_file(deidentified_file, de_identify=False, re_identify=True, mapping_file=mapping_file)
+    
+# %%
