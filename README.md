@@ -8,13 +8,13 @@ This application enables users to de-identify text files containing Protected He
 Follow these steps to use the EHR De-Identification tool:
 
 ### 1. Download the Script
-Download the `EHR-De-Identification.py` file to a local directory on your computer.
+Download the `main.py` file to a local directory on your computer.
 
 ### 2. Prepare Your PHI File
-Place the PHI text file you want to de-identify in the same directory as `EHR-De-Identification.py`.
+Place the PHI text file you want to de-identify in the same directory as `main.py`.
 
 ### 3. Specify the PHI File Name
-1. Open `EHR-De-Identification.py` in a text editor or Python IDE.
+1. Open `main.py` in a text editor or Python IDE.
 2. Locate the following line of code:
    ```python
    ehr_file = 'ehr JMS.txt'
@@ -24,7 +24,7 @@ Place the PHI text file you want to de-identify in the same directory as `EHR-De
 
 ### 4. Navigate to the Directory
 1. Open Terminal (Mac/Linux) or Command Prompt (Windows).
-2. Use the `cd` command to navigate to the directory containing `EHR-De-Identification.py` and your PHI file. For example:
+2. Use the `cd` command to navigate to the directory containing `main.py` and your PHI file. For example:
    ```sh
    cd /path/to/your/directory
    ```
@@ -32,7 +32,7 @@ Place the PHI text file you want to de-identify in the same directory as `EHR-De
 ### 5. Run the Script
 Type the following command and press Enter:
 ```sh
-python3 EHR-De-Identification.py
+python3 main.py
 ```
 
 ### 6. Retrieve the De-Identified File
