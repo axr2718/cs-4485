@@ -54,7 +54,7 @@ def deidentify_PHI_with_mapping(text):
       
     # Medical Record Number
     text = replace_and_map(r'Medical record number:\s*[A-Z0-9\-]+', 
-                           r'Medical record number: *mrn*', 
+                           r'*mrn*', 
                            'mrn', 
                            text)
     
@@ -71,13 +71,13 @@ def deidentify_PHI_with_mapping(text):
     
     # Address
     text = replace_and_map(r'Address:\s*.*?(?=\n|$)', 
-                           'Address: *address*', 
+                           '*address*', 
                            'address', 
                            text)
     
     # Hospital Name
     text = replace_and_map(r'Hospital Name:\s*[A-Za-z\s]+(?=\n|$)', 
-                           r'Hospital Name: *hospital*', 
+                           r'*hospital*', 
                            'hospital', 
                            text)
     
@@ -89,35 +89,35 @@ def deidentify_PHI_with_mapping(text):
     
     # Social Security Number
     text = replace_and_map(r'SSN:\s*(?:\d{3}-\d{2}-\d{4}|\*{3}-\*\d-\d{4})', 
-                           r'SSN: *ssn*', 
+                           r'*ssn*', 
                            'ssn', 
                            text)
     
     # Phone Numbers
     text = replace_and_map(r'Phone:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 
-                           'Phone: *phone_number*', 
+                           '*phone_number*', 
                            'phone_number', 
                            text)
     
     # Fax Numbers 
     text = replace_and_map(r'Fax number:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 
-                           'Fax number: *fax_number*', 
+                           '*fax_number*', 
                            'fax_number', 
                            text)
     
     text = replace_and_map(r'Fax no\.:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 
-                           'Fax no.: *fax_number*', 
+                           '*fax_number*', 
                            'fax_number', 
                            text)
     
     text = replace_and_map(r'Fax\.:\s*(?:\+?1[-\s]?)?\d{3}[-\s]?\d{3}[-\s]?\d{4}', 
-                           'Fax no.: *fax_number*', 
+                           '*fax_number*', 
                            'fax_number', 
                            text)
     
     # Email Addresses
     text = replace_and_map(r'[Ee]mail:?\s*[\w\.-]+@[\w\.-]+\.\w+', 
-                           r'Email: *email*', 
+                           r'*email*', 
                            'email', 
                            text)
     
@@ -128,69 +128,69 @@ def deidentify_PHI_with_mapping(text):
 
     # Health Plan beneficiary numbers
     text = replace_and_map(r'Health plan beneficiary number:\s*[\d\-]+', 
-                           r'Health plan beneficiary number: *beneficiary*', 
+                           r'*beneficiary*', 
                            'beneficiary', 
                            text, 
                            flags=re.IGNORECASE)
     
     # Health Insurance
     text = replace_and_map(r'Health Insurance:\s*[A-Z0-9\-]+', 
-                           r'Health Insurance: *insurance*', 
+                           r'*insurance*', 
                            'insurance', 
                            text)
         
     # Group Number
     text = replace_and_map(r'Group no\.:\s*[\d\-]+', 
-                           r'Group no.: *group_number*', 
+                           r'*group_number*', 
                            'group_number', 
                            text, 
                            flags=re.IGNORECASE)
     
     # Medicaid Account
     text = replace_and_map(r'Medicaid account:\s*(\d+(?:\s+\d+)*)', 
-                           r'Medicaid account: *medicaid*', '' \
+                           r'*medicaid*', '' \
                            'medicaid', 
                            text)
     
     # Social Worker
     text = replace_and_map(r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', 
-                           r'Social worker: *name*', 
+                           r'*name*', 
                            'social_worker_name', 
                            text)
 
     # Account Numbers
     text = replace_and_map(r'Account:\s*[\d\s]+', 
-                           r'Account: *account*', 
+                           r'*account*', 
                            'account', 
                            text)
 
     # Certificate Numbers
     text = replace_and_map(r'Certificate number:.*?(?=\n|$)', 
-                           r'Certificate number: *certificate*', 
+                           r'*certificate*', 
                            'certificate', 
                            text)
     
     # License Numbers
     text = replace_and_map(r'license number:\s*[A-Z]{2}\d{2}-\d{6}', 
-                           r'license number: *license_number*', 
+                           r'*license_number*', 
                            'license_number', 
                            text)
 
     # Serial Numbers
     text = replace_and_map(r'Pacemaker serial numbers:[A-Z0-9\-]+', 
-                           r'Pacemaker serial numbers: *serial_number*', 
+                           r'*serial_number*', 
                            'serial_number', 
                            text)
     
     # Device Identifiers
     text = replace_and_map(r'Device identifier:[A-Z0-9\-]+', 
-                           'Device identifier: *device_identifier*', 
+                           '*device_identifier*', 
                            'device_identifier', 
                            text)
     
     # Biometric identifiers
     text = replace_and_map(r'Biometric:.*?(?=\n|$)', 
-                           'Biometric: *biometric_identifier*', 
+                           '*biometric_identifier*', 
                            'biometric_identifier', 
                            text)
     
@@ -203,13 +203,13 @@ def deidentify_PHI_with_mapping(text):
     
     # Codes
     text = replace_and_map(r'Code:\d+', 
-                           r'Code: *code*', 
+                           r'*code*', 
                            'code', 
                            text)
     
     # URL
     text = replace_and_map(r'URL:.*?(?=\n|$)', 
-                           r'URL: *url*', 
+                           r'*url*', 
                            'url', 
                            text)
     

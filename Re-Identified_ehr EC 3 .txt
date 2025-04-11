@@ -1,31 +1,31 @@
 Patient name: Dr. Benjamin Wright
 Date of Birth: 11/05/1988
-Medical record number: Medical record number:TXB4459-BS34334
-SSN: SSN: 321-67-8923
+Medical record number:TXB4459-BS34334
+SSN: 321-67-8923
 Date of Visit: 02/14/2024
-Address: Address: 789 Willow Lane, Apt 34, Brookfield, TX 75001
-Phone: Phone: 214-555-6790
-Email: Email: emily.carter@email.com
-Health plan beneficiary number: Health plan beneficiary number: 888-6765-1110
-Device identifier: Device identifier:PM4437-BTX33457
-Pacemaker serial numbers: Pacemaker serial numbers:B1001-7786432
-Code: Code:772980014
+Address: 789 Willow Lane, Apt 34, Brookfield, TX 75001
+Phone: 214-555-6790
+Email: emily.carter@email.com
+Health plan beneficiary number: 888-6765-1110
+Device identifier:PM4437-BTX33457
+Pacemaker serial numbers:B1001-7786432
+Code:772980014
 
 Provider: Ms. Linda Shaw, MD
-Hospital Name: Hospital Name: Greenfield Medical Center
-license number: license number: MD77-786123
-Fax number: Fax no.: 800-677-1254
-Address: Address: 159 Oakwood Drive, Greenfield, TX 76021
+Hospital Name: Greenfield Medical Center
+license number: MD77-786123
+Fax no.: 800-677-1254
+Address: 159 Oakwood Drive, Greenfield, TX 76021
 
-Account: Account: 4875 2198 6623 7741
+Account: 4875 2198 6623 7741
 Social Worker: 
 Ms. Carter
-Certificate number: Certificate number:SW788a-7898
-Health Insurance: Health Insurance: BCBSX-We32445033
-Group no.: Group no.: 614277
-Fax no.: Fax no.: 800-677-1254
-Email: email: info@bcbstexas.com
-URL: URL:www.bcbsx.com
+Certificate number:SW788a-7898
+Health Insurance: BCBSX-We32445033
+Group no.: 614277
+Fax no.: 800-677-1254
+email: info@bcbstexas.com
+URL:www.bcbsx.com
 
 Chief Complaint: "Severe headaches and dizziness for the past two weeks."
 
@@ -61,7 +61,7 @@ Mother: Hypertension, migraines
 
 Father: Type 2 diabetes, stroke
 
-Biometric: Biometric: Fingerprint Recognition 
+Biometric: Fingerprint Recognition 
 
 Social History:
 

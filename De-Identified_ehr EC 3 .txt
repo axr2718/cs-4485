@@ -1,29 +1,29 @@
 Patient name: *name*
 Date of Birth: *date*
-Medical record number: *mrn*
-SSN: *ssn*
+*mrn*
+*ssn*
 Date of Visit: *date*
-Address: *address*
-Phone: *phone_number*
-Email: *email*
-Health plan beneficiary number: *beneficiary*
-Device identifier: *device_identifier*
-Pacemaker serial numbers: *serial_number*
-Code: *code*
+*address*
+*phone_number*
+*email*
+*beneficiary*
+*device_identifier*
+*serial_number*
+*code*
 
 Provider: *name*, MD
-Hospital Name: *hospital*
-license number: *license_number*
-Fax number: *fax_number*
-Address: *address*
+*hospital*
+*license_number*
+*fax_number*
+*address*
 
-Account: *account*Social Worker: *name*
-Certificate number: *certificate*
-Health Insurance: *insurance*e32445033
-Group no.: *group_number*
-Fax no.: *fax_number*
-Email: *email*
-URL: *url*
+*account*Social Worker: *name*
+*certificate*
+*insurance*e32445033
+*group_number*
+*fax_number*
+*email*
+*url*
 
 Chief Complaint: "Severe headaches and dizziness for the past two weeks."
 
@@ -59,7 +59,7 @@ Mother: Hypertension, migraines
 
 Father: Type 2 diabetes, stroke
 
-Biometric: *biometric_identifier*
+*biometric_identifier*
 
 Social History:
 

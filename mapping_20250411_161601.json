@@ -1,0 +1,43 @@
+{
+  "name": [
+    "Dr. Benjamin Wright",
+    "Ms. Linda Shaw",
+    "\nMs. Carter"
+  ],
+  "mrn": "Medical record number:TXB4459-BS34334",
+  "address": [
+    "Address: 789 Willow Lane, Apt 34, Brookfield, TX 75001",
+    "Address: 159 Oakwood Drive, Greenfield, TX 76021"
+  ],
+  "hospital": "Hospital Name: Greenfield Medical Center",
+  "date": [
+    "11/05/1988",
+    "02/14/2024",
+    "02/16/2024",
+    "02/28/2024",
+    "04/10/2024",
+    "03/20/2024",
+    "02/28/2024",
+    "03/20/2024",
+    "04/10/2024"
+  ],
+  "ssn": "SSN: 321-67-8923",
+  "phone_number": "Phone: 214-555-6790",
+  "fax_number": "Fax no.: 800-677-1254",
+  "email": [
+    "Email: emily.carter@email.com",
+    "email: info@bcbstexas.com"
+  ],
+  "beneficiary": "Health plan beneficiary number: 888-6765-1110",
+  "insurance": "Health Insurance: BCBSX-W",
+  "group_number": "Group no.: 614277",
+  "account": "Account: 4875 2198 6623 7741\n",
+  "certificate": "Certificate number:SW788a-7898",
+  "license_number": "license number: MD77-786123",
+  "serial_number": "Pacemaker serial numbers:B1001-7786432",
+  "device_identifier": "Device identifier:PM4437-BTX33457",
+  "biometric_identifier": "Biometric: Fingerprint Recognition ",
+  "lab_results": "Lab Results (*date*):\n\nCBC: Normal\n\nElectrolytes: Normal\n\nMRI Brain: No acute abnormalities detected\n\n",
+  "code": "Code:772980014",
+  "url": "URL:www.bcbsx.com"
+}
