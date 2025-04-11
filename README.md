@@ -1,7 +1,7 @@
 # EHR De-Identification Tool
 
 ## 📌 Description
-This application enables users to de-identify text files containing Protected Health Information (PHI) efficiently and securely. It reads a given PHI-containing file, processes the text to remove or anonymize identifiable information (as specified in PHI.txt), and saves a de-identified version in the same directory.
+This application enables users to de-identify text files containing Protected Health Information (PHI) efficiently and securely. It reads a given PHI-containing file, processes the text to remove or anonymize identifiable information (as specified in PHI.txt), and saves a de-identified version in the same directory. It also allows for re-identification of the de-identified file.
 
 ## 🛠 How to Use
 
@@ -20,7 +20,8 @@ Place the PHI text file you want to de-identify in the same directory as `main.p
    ehr_file = 'ehr JMS.txt'
    ```
 3. Replace `'ehr JMS.txt'` with the name of your PHI file.
-4. Save the file after making the change.
+
+The function `process_ehr_file` takes the parameters `de_identify`, `re-identify` and `mapping_file` to handle which operation the user wants to do. To de-identify, simply set `de_identify=True`. To re-identify, note that you will first need to generate a mapping file by setting `de_identify=True`, then passing this mapping along with `re_identify=True` in the function.
 
 ### 4. Navigate to the Directory
 1. Open Terminal (Mac/Linux) or Command Prompt (Windows).
