@@ -145,20 +145,16 @@ def deidentify_PHI_with_mapping(text):
                            flags=re.IGNORECASE)
     
     # Medicaid Account
-    text = replace_and_map(
-        r'Medicaid account:\s*(\d+(?:\s+\d+)*)', 
-        r'Medicaid account: *medicaid*', 
-        'medicaid', 
-        text
-    )
+    text = replace_and_map(r'Medicaid account:\s*(\d+(?:\s+\d+)*)', 
+                           r'Medicaid account: *medicaid*', '' \
+                           'medicaid', 
+                           text)
     
     # Social Worker
-    text = replace_and_map(
-        r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', 
-        r'Social worker: *name*', 
-        'social_worker_name', 
-        text
-    )
+    text = replace_and_map(r'Social worker:\s*(?:Mr\.|Mrs\.|Ms\.|Dr\.)?\s*[A-Z][a-z]+ [A-Z][a-z]+', 
+                           r'Social worker: *name*', 
+                           'social_worker_name', 
+                           text)
 
     # Account Numbers
     text = replace_and_map(r'Account:\s*[\d\s]+', 
