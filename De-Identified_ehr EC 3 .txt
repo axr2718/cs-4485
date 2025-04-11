@@ -1,29 +1,30 @@
-Patient name: *name*
+Patient name: *patient_name*
 Date of Birth: *date*
-*mrn*
-*ssn*
+Medical record number: *mrn*
+SSN: *ssn*
 Date of Visit: *date*
-*address*
-*phone_number*
-*email*
-*beneficiary*
-*device_identifier*
-*serial_number*
-*code*
+Address: *address*
+Phone: *phone_number*
+Email: *email*
+Health plan beneficiary number: *beneficiary*
+Device identifier:*device_identifier*
+Pacemaker serial numbers:*serial_number*
+Code:*code*
 
 Provider: *name*, MD
-*hospital*
-*license_number*
-*fax_number*
-*address*
+Hospital Name: *hospital*
+license number: *license_number*
+Fax no.: *fax_number*
+Address: *address*
 
-*account*Social Worker: *name*
-*certificate*
-*insurance*e32445033
-*group_number*
-*fax_number*
-*email*
-*url*
+Account: *account*
+Social Worker: *name*
+Certificate number: *certificate*
+Health Insurance: *insurance*
+Group no.: *group_number*
+Fax no.: *fax_number*
+Email: *email*
+URL: *url*
 
 Chief Complaint: "Severe headaches and dizziness for the past two weeks."
 
@@ -59,7 +60,7 @@ Mother: Hypertension, migraines
 
 Father: Type 2 diabetes, stroke
 
-*biometric_identifier*
+Biometric: *biometric_identifier*
 
 Social History:
 
@@ -129,7 +130,15 @@ Referred to neurology for further evaluation.
 
 Patient education provided on lifestyle modifications to manage headaches and hypertension.
 
-Lab Results: *results*\n\nFollow-up Appointments:
+Lab Results (*date*):
+
+CBC: Normal
+
+Electrolytes: Normal
+
+MRI Brain: No acute abnormalities detected
+
+Follow-up Appointments:
 
 Scheduled for *date* with neurology.
 
