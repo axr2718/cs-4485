@@ -17,10 +17,9 @@ license number: *license_number*
 Fax number: *fax_number*
 Address: *address*
 
-Account: *account*
-Social Worker: *name*
+Account: *account*Social Worker: *name*
 Certificate number: *certificate*
-Health Insurance: *insurance*
+Health Insurance: *insurance*e32445033
 Group no.: *group_number*
 Fax no.: *fax_number*
 Email: *email*
@@ -130,9 +129,7 @@ Referred to neurology for further evaluation.
 
 Patient education provided on lifestyle modifications to manage headaches and hypertension.
 
-Lab Results: *results*
-
-Follow-up Appointments:
+Lab Results: *results*\n\nFollow-up Appointments:
 
 Scheduled for *date* with neurology.
 

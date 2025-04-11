@@ -1,8 +1,10 @@
+# %%
 import re
 import json
 import os
 from datetime import datetime
 
+# %%
 def deidentify_PHI_with_mapping(text):
     # mapping between the replaced and the original text
     phi_map = {}
@@ -234,7 +236,7 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
     if de_identify:
         deidentified_text, phi_map = deidentify_PHI_with_mapping(text)
         
-        deidentified_filename = f"De-Identified(main)_{ehr_file}"
+        deidentified_filename = f"De-Identified_{ehr_file}"
         with open(deidentified_filename, 'w') as file:
             file.write(deidentified_text)
         
@@ -264,7 +266,7 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
         # Re-identify
         reidentified_text = reidentify_PHI(deidentified_text, phi_map)
         
-        reidentified_filename = f"Re-Identified(main)_{ehr_file.replace('De-Identified_', '')}"
+        reidentified_filename = f"Re-Identified_{ehr_file.replace('De-Identified_', '')}"
         with open(reidentified_filename, 'w') as file:
             file.write(reidentified_text)
         
@@ -272,8 +274,10 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
         
         return reidentified_filename
 
+# %%
 if __name__ == "__main__":
     ehr_file = 'ehr EC 3 .txt'
+    
     deidentified_file, mapping_file = process_ehr_file(ehr_file, de_identify=True)
     
     process_ehr_file(deidentified_file, de_identify=False, re_identify=True, mapping_file=mapping_file)
