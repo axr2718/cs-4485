@@ -5,6 +5,7 @@ import uuid
 import os
 import gradio as gr
 
+
 def deidentify_PHI_with_mapping(text):
     phi_map = {}
 
@@ -29,7 +30,9 @@ def deidentify_PHI_with_mapping(text):
 
         return new_text
 
-    text = replace_and_map(r'(?i)Patient name:\s*(.*)', 'Patient name: *patient_name*', 'patient_name', text, value_group=1)
+    text = replace_and_map(r'(?i)Patient name:\s*(.*)', 'Patient name: *name*', 'name', text, value_group=1)
+
+    text = replace_and_map(r'(?i)Patient:\s*(.*)', 'Patient: *name*', 'name', text, value_group=1)
 
     text = replace_and_map(r'(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+ [A-Z][a-z]+', '*name*', 'name', text)
 
@@ -37,7 +40,7 @@ def deidentify_PHI_with_mapping(text):
 
     text = replace_and_map(r'Ms\.\s*([A-Z][a-z]+)', '*name*', 'name', text, value_group=1)
 
-    text = replace_and_map(r'Medical record number:\s*([A-Z0-9\-]+)', 'Medical record number: *mrn*', 'mrn', text, value_group=1)
+    text = replace_and_map(r'(?i)Medical record number:\s*([A-Z0-9\-]+)', 'Medical record number: *mrn*', 'mrn', text, value_group=1)
 
     text = replace_and_map(r'Provider:\s*(?:Dr\.|Ms\.|Mr\.)?\s*([A-Z][a-z]+ [A-Z][a-z]+)', 'Provider: *provider_name*, MD', 'provider_name', text, value_group=1)
 
@@ -111,7 +114,7 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
     if de_identify:
         deidentified_text, phi_map = deidentify_PHI_with_mapping(text)
 
-        deidentified_filename = f"De-Identified_{ehr_file}"
+        deidentified_filename = f"De-Identified_{Path(ehr_file).name}"
         with open(deidentified_filename, 'w') as file:
             file.write(deidentified_text)
 
@@ -148,7 +151,7 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
 
         return reidentified_filename
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     print("=== EHR PHI Tool ===")
     print("1. De-identify a file")
     print("2. Re-identify a file")
@@ -216,6 +219,25 @@ if __name__ == "__main__":
 def deidentify_interface(file):
     try:
         # Run your existing logic
+        deidentified_file, _ = process_ehr_file(file.name, de_identify=True)
+        return deidentified_file, "✅ De-identification successful!"
+    except Exception as e:
+        return None, f"❌ Error: {str(e)}"
+
+demo = gr.Interface(
+    fn=deidentify_interface,
+    inputs=gr.File(label="Upload your EHR file"),
+    outputs=[gr.File(label="Download De-identified File"), gr.Textbox(label="Status")],
+    title="EHR PHI De-identifier",
+    description="Upload a file and get a de-identified version with mapped PHI removed."
+)
+
+if __name__ == "__main__":
+    demo.launch()"""
+
+# === GRADIO INTERFACE ===
+def deidentify_interface(file):
+    try:
         deidentified_file, _ = process_ehr_file(file.name, de_identify=True)
         return deidentified_file, "✅ De-identification successful!"
     except Exception as e:

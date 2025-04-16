@@ -1,6 +1,6 @@
-Patient: Johnathan Smith
+Patient: *name*
 Date of Birth: *date*
-Medical Record Number: 1234567
+Medical Record Number: *mrn*
 Date of Visit: *date*
 Address: *address*
 Phone: *phone_number*

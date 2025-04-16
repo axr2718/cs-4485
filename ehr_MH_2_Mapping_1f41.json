@@ -1,0 +1,27 @@
+{
+  "name": [
+    "Dr. Eleanor Vance",
+    "Ms.Jen Howard",
+    "\nMs. Fox"
+  ],
+  "address": [
+    "456 Maple Avenue, Apt 22, Rivertown, NY 10001",
+    "742 Evergreen Terrace Springfield, IL 62704"
+  ],
+  "date": [
+    "07/22/1975",
+    "03/07/2024",
+    "03/09/2024",
+    "03/21/2024",
+    "03/21/2024"
+  ],
+  "phone_number": [
+    "315-555-9876",
+    "800-543-7787"
+  ],
+  "email": [
+    "matelda.fox@email.com",
+    "firstonecare@1care.net"
+  ],
+  "medicaid": "2378 9901 8755 9812"
+}

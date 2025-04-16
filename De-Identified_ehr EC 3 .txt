@@ -1,4 +1,4 @@
-Patient name: *patient_name*
+Patient name: *name*
 Date of Birth: *date*
 Medical record number: *mrn*
 SSN: *ssn*

@@ -1,0 +1,44 @@
+{
+  "name": [
+    "Dr. Benjamin Wright",
+    "Ms. Linda Shaw",
+    "\nMs. Carter"
+  ],
+  "address": [
+    "789 Willow Lane, Apt 34, Brookfield, TX 75001",
+    "159 Oakwood Drive, Greenfield, TX 76021"
+  ],
+  "hospital": "Greenfield Medical Center",
+  "date": [
+    "11/05/1988",
+    "02/14/2024",
+    "02/16/2024",
+    "02/28/2024",
+    "04/10/2024",
+    "03/20/2024",
+    "02/28/2024",
+    "03/20/2024",
+    "04/10/2024"
+  ],
+  "ssn": "321-67-8923",
+  "phone_number": "214-555-6790",
+  "fax_number": [
+    "322-551-7700",
+    "800-677-1254"
+  ],
+  "email": [
+    "emily.carter@email.com",
+    "info@bcbstexas.com"
+  ],
+  "url": "www.bcbsx.com",
+  "beneficiary": "888-6765-1110",
+  "insurance": "BCBSX-We32445033",
+  "group_number": "614277",
+  "account": "4875 2198 6623 7741\n",
+  "certificate": "SW788a-7898",
+  "license_number": "MD77-786123",
+  "serial_number": "B1001-7786432",
+  "device_identifier": "PM4437-BTX33457",
+  "biometric_identifier": "Fingerprint Recognition ",
+  "code": "772980014"
+}
