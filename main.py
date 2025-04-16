@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import uuid
 import os
+import gradio as gr
 
 def deidentify_PHI_with_mapping(text):
     phi_map = {}
@@ -211,3 +212,22 @@ if __name__ == "__main__":
         except Exception as e:
             print("\n❌ Error during re-identification:")
             print(str(e))
+
+def deidentify_interface(file):
+    try:
+        # Run your existing logic
+        deidentified_file, _ = process_ehr_file(file.name, de_identify=True)
+        return deidentified_file, "✅ De-identification successful!"
+    except Exception as e:
+        return None, f"❌ Error: {str(e)}"
+
+demo = gr.Interface(
+    fn=deidentify_interface,
+    inputs=gr.File(label="Upload your EHR file"),
+    outputs=[gr.File(label="Download De-identified File"), gr.Textbox(label="Status")],
+    title="EHR PHI De-identifier",
+    description="Upload a file and get a de-identified version with mapped PHI removed."
+)
+
+if __name__ == "__main__":
+    demo.launch()
