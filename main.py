@@ -2,6 +2,7 @@ import re
 import json
 from pathlib import Path
 import uuid
+import os
 
 def deidentify_PHI_with_mapping(text):
     phi_map = {}
@@ -147,6 +148,66 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
         return reidentified_filename
 
 if __name__ == "__main__":
-    ehr_file = 'ehr EC 3 .txt'
-    deidentified_file, mapping_file = process_ehr_file(ehr_file, de_identify=True)
-    process_ehr_file(deidentified_file, de_identify=False, re_identify=True, mapping_file=mapping_file)
+    print("=== EHR PHI Tool ===")
+    print("1. De-identify a file")
+    print("2. Re-identify a file")
+    
+    while True:
+        choice = input("\nPlease choose an option (1 or 2): ").strip()
+        if choice in ['1', '2']:
+            break
+        print("Invalid choice. Please enter 1 or 2.")
+
+    if choice == '1':
+        print("\n=== De-identification Mode ===")
+        print("This will de-identify PHI from your EHR file.")
+        
+        # Get input file
+        while True:
+            input_file = input("\nPlease enter the path to your EHR file: ").strip()
+            if os.path.exists(input_file):
+                break
+            print("Error: File not found. Please enter a valid file path.")
+
+        try:
+            # Process the file
+            deidentified_file, mapping_file = process_ehr_file(input_file, de_identify=True)
+            
+            # Print success message
+            print("\n✅ De-identification successful!")
+            print(f"De-identified file saved as: {deidentified_file}")
+            print(f"PHI mapping saved as: {mapping_file}")
+            
+        except Exception as e:
+            print("\n❌ Error during de-identification:")
+            print(str(e))
+    
+    else:  # choice == '2'
+        print("\n=== Re-identification Mode ===")
+        print("This will re-identify a previously de-identified file.")
+        
+        # Get de-identified file
+        while True:
+            deidentified_file = input("\nPlease enter the path to the de-identified file: ").strip()
+            if os.path.exists(deidentified_file):
+                break
+            print("Error: File not found. Please enter a valid file path.")
+        
+        # Get mapping file
+        while True:
+            mapping_file = input("\nPlease enter the path to the mapping file: ").strip()
+            if os.path.exists(mapping_file):
+                break
+            print("Error: File not found. Please enter a valid file path.")
+
+        try:
+            # Process the file
+            reidentified_file = process_ehr_file(deidentified_file, de_identify=False, re_identify=True, mapping_file=mapping_file)
+            
+            # Print success message
+            print("\n✅ Re-identification successful!")
+            print(f"Re-identified file saved as: {reidentified_file}")
+            
+        except Exception as e:
+            print("\n❌ Error during re-identification:")
+            print(str(e))

@@ -1,9 +1,9 @@
-Patient name: *name*
-DoB: *dob*
-Medical Record Number: *mrn*
-Date of Visit: 10/26/2023
+Patient: Johnathan Smith
+Date of Birth: *date*
+Medical Record Number: 1234567
+Date of Visit: *date*
 Address: *address*
-Phone: *phone*
+Phone: *phone_number*
 Email: *email*
  
 
@@ -12,7 +12,7 @@ Provider: *name*, MD
 
 Chief Complaint: "Persistent cough and shortness of breath for the past week."
 
-History of Present Illness (HPI):*name* presents to the clinic with a one-week history of a dry, hacking cough and progressive shortness of breath. They reports the cough began insidiously, initially mild, but has worsened over the past three days. They denies fever, chills, or night sweats. They describes the shortness of breath as a feeling of tightness in his chest, exacerbated by exertion. They has noticed a decrease in his exercise tolerance. They denies any recent travel or known exposures to sick individuals. They has tried over-the-counter cough suppressants with minimal relief.
+History of Present Illness (HPI):*name* presents to the clinic with a one-week history of a dry, hacking cough and progressive shortness of breath. He reports the cough began insidiously, initially mild, but has worsened over the past three days. He denies fever, chills, or night sweats. He describes the shortness of breath as a feeling of tightness in his chest, exacerbated by exertion. He has noticed a decrease in his exercise tolerance. He denies any recent travel or known exposures to sick individuals. He has tried over-the-counter cough suppressants with minimal relief.
 
 Past Medical History (PMH):
 
@@ -23,8 +23,7 @@ Medications:
 
 Albuterol inhaler (as needed)
 Fluticasone nasal spray (daily)
-Allergies: *allergies*
-
+Allergies:
 
 Penicillin (rash)
 Family History:
@@ -69,15 +68,15 @@ Prescribed inhaled corticosteroid (fluticasone/salmeterol) twice daily.
 Ordered chest X-ray to rule out pneumonia.
 Instructed patient to monitor symptoms and return to clinic if symptoms worsen.
 Patient education provided on proper inhaler technique and asthma action plan.
-Chest X-Ray Report (10/26/2023):
+Chest X-Ray Report (*date*):
 
 Mild hyperinflation of the lungs.
 No evidence of pneumonia or other acute pulmonary process.
 Follow-up Appointment:
 
-Scheduled for 11/02/2023.
+Scheduled for *date*.
 Provider Notes:
 Patient responded well to nebulized albuterol in clinic. Patient was given clear instructions on medication usage and when to return to clinic. Patient understands the return instructions.
 
-11/02/2023 (Follow-up):
+*date* (Follow-up):
 Patient reports significant improvement in cough and shortness of breath. Reports using inhaler as instructed. Examination shows improved breath sounds, minimal wheezing. Continue current medication regimen. Re-evaluate in 1 month.
