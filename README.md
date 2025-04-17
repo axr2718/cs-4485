@@ -1,55 +1,119 @@
 # EHR De-Identification Tool
 
-## 📌 Description
-This application enables users to de-identify text files containing Protected Health Information (PHI) efficiently and securely. It reads a given PHI-containing file, processes the text to remove or anonymize identifiable information (as specified in PHI.txt), and saves a de-identified version in the same directory. It also allows for re-identification of the de-identified file.
+## Description
 
-## 🛠 How to Use
+This application enables users to securely de-identify and re-identify text files containing Protected Health Information (PHI). It uses pattern-based detection to identify sensitive information and replaces it with standardized placeholders. Optionally, users can encrypt the PHI mapping with a password for secure re-identification at a later time.
 
-Follow these steps to use the EHR De-Identification tool:
+The tool features a web-based interface built with Gradio, allowing for file upload, text preview, and downloading of de-identified or re-identified files—all without writing any code.
 
-### 1. Download the Script
-Download the `main.py` file to a local directory on your computer.
+---
 
-### 2. Prepare Your PHI File
-Place the PHI text file you want to de-identify in the same directory as `main.py`.
+## Features
 
-### 3. Specify the PHI File Name
-1. Open `main.py` in a text editor or Python IDE.
-2. Locate the following line of code:
-   ```python
-   ehr_file = 'ehr JMS.txt'
-   ```
-3. Replace `'ehr JMS.txt'` with the name of your PHI file.
+- Secure encryption of PHI mappings using password-based key derivation
+- Optional re-identification capability
+- No programming required; all operations are done via a web interface
+- Supports downloading as plain `.txt` or encrypted `.zip` bundle
+- Built-in redaction for common PHI types (e.g., names, addresses, MRNs, SSNs, dates, and contact details)
 
-The function `process_ehr_file` takes the parameters `de_identify`, `re-identify` and `mapping_file` to handle which operation the user wants to do. To de-identify, simply set `de_identify=True`. To re-identify, note that you will first need to generate a mapping file by setting `de_identify=True`, then passing this mapping along with `re_identify=True` in the function.
+---
 
-### 4. Navigate to the Directory
-1. Open Terminal (Mac/Linux) or Command Prompt (Windows).
-2. Use the `cd` command to navigate to the directory containing `main.py` and your PHI file. For example:
-   ```sh
-   cd /path/to/your/directory
-   ```
+## Getting Started
 
-### 5. Run the Script
-Type the following command and press Enter:
-```sh
+### 1. Launch the Application
+
+To start the tool, run the Python script:
+
+```bash
 python3 main.py
 ```
 
-### 6. Retrieve the De-Identified or Re-Identified File
-1. Once the script finishes running, the de-identified file will be saved in the same directory.
-2. The output file will follow this naming format:
-   ```
-   De-Identified_PHIFileName.txt
-   ```
-3. If `re_identify` was set to `True`, then there will be a Re-Identified file as well.
-4. For example, if your original file was `ehr JMS.txt`, the de-identified file will be named `De-Identified_ehr JMS.txt`.
+> **Note**: Requires Python 3.7 or higher and the following packages: `gradio`, `cryptography`, and standard Python libraries.
 
-A `json` file containing the mappings between the de-identified and original values will be stored as well.
+---
 
-## Notes
-- Ensure you have Python 3 installed on your system.
-- Double-check file names and paths to avoid errors.
-- Consider making a backup of your original file before running the script.
-- To confirm the script is running, open the de-identified file and verify PHI has been replaced. 
-- For accurate results, ensure your PHI file is clearly formatted and PHI terms in the PHI.txt file are up-to-date and accurate. 
+## De-Identification Process
+
+1. **Upload the EHR File**  
+   Upload a `.txt` file containing PHI.
+
+2. **(Optional) Set a Password**  
+   If re-identification will be needed later, enter a password to encrypt the mapping data.
+
+3. **Preview and Download**  
+   - Review the de-identified text in the interface
+   - Download the plain `.txt` version
+   - Or download a `.zip` file that includes the de-identified text and encrypted mapping
+
+---
+
+## Re-Identification Process
+
+1. **Upload the Encrypted Bundle**  
+   Upload the `.zip` file created during de-identification.
+
+2. **Enter the Password**  
+   Use the same password that was used to encrypt the mapping.
+
+3. **Download the Original File**  
+   The file will be restored with the original PHI and made available for download.
+
+---
+
+## Output Files
+
+- **De-Identified Text File**:  
+  Saved as `De-Identified_<YourFileName>.txt`
+
+- **Encrypted Bundle (optional)**:  
+  Saved as `<YourFileName>_DeidBundle.zip`, and contains:
+  - De-identified text
+  - Encrypted PHI mapping (`EncryptedMapping.bin`)
+  - Salt file for key derivation (`Salt.bin`)
+
+- **Re-Identified File**:  
+  Reconstructed `.txt` file matching the original input
+
+---
+
+## Technical Details
+
+- PHI is detected using regular expressions and replaced with labeled placeholders (e.g., `*name*`, `*address*`, `*date*`)
+- Supported identifiers include:
+  - Patient names, provider names, addresses
+  - Social Security Numbers, phone/fax numbers, email, URLs
+  - Medical record numbers, insurance/group/account numbers
+  - Dates, device identifiers, biometric data, and more
+- Mapping is encrypted using Fernet symmetric encryption (AES-based), with a password-derived key using PBKDF2 and SHA256
+
+---
+
+## Installation Requirements
+
+Install dependencies using:
+
+```bash
+pip install -r requirements.txt
+```
+
+The `requirements.txt` should include:
+- gradio
+- cryptography
+
+---
+
+## Best Practices
+
+- Always preview the output before distributing any files
+- Use strong passwords if re-identification may be necessary
+- Retain a backup of original files
+- Ensure PHI terms follow consistent formatting for accurate redaction
+
+---
+
+## Example Workflow
+
+1. Upload `ehr_sample.txt` using the **De-Identify** tab.
+2. Optionally, set a password for secure mapping encryption.
+3. Download either the de-identified `.txt` or a `.zip` bundle for later re-identification.
+4. To restore the original file, use the **Re-Identify** tab, upload the bundle, and provide the correct password.
