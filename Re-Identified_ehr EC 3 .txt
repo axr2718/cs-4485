@@ -1,4 +1,4 @@
-Patient name: Emily Carter
+Patient name: Dr. Benjamin Wright
 Date of Birth: 11/05/1988
 Medical record number: TXB4459-BS34334
 SSN: 321-67-8923
@@ -11,7 +11,7 @@ Device identifier:PM4437-BTX33457
 Pacemaker serial numbers:B1001-7786432
 Code:772980014
 
-Provider: Dr. Benjamin Wright, MD
+Provider: Ms. Linda Shaw, MD
 Hospital Name: Greenfield Medical Center
 license number: MD77-786123
 Fax no.: 322-551-7700
@@ -19,7 +19,8 @@ Address: 159 Oakwood Drive, Greenfield, TX 76021
 
 Account: 4875 2198 6623 7741
 
-Social Worker: Ms. Linda Shaw
+Social Worker: 
+Ms. Carter
 Certificate number: SW788a-7898
 Health Insurance: BCBSX-We32445033
 Group no.: 614277
@@ -29,8 +30,7 @@ URL: www.bcbsx.com
 
 Chief Complaint: "Severe headaches and dizziness for the past two weeks."
 
-History of Present Illness (HPI):
-Ms. Carter presents with complaints of severe, persistent headaches accompanied by dizziness and occasional nausea. Symptoms began gradually and have been worsening over the past two weeks. She describes the headache as a constant pressure, predominantly in the frontal and temporal regions. No known history of migraines. Over-the-counter pain relievers provide minimal relief. No recent head trauma. Denies fever, vision changes, or weakness.
+History of Present Illness (HPI):*name* presents with complaints of severe, persistent headaches accompanied by dizziness and occasional nausea. Symptoms began gradually and have been worsening over the past two weeks. She describes the headache as a constant pressure, predominantly in the frontal and temporal regions. No known history of migraines. Over-the-counter pain relievers provide minimal relief. No recent head trauma. Denies fever, vision changes, or weakness.
 
 Past Medical History (PMH):
 

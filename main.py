@@ -5,6 +5,8 @@ import uuid
 from cryptography.fernet import Fernet
 import gradio as gr
 
+# --- PHI Handling Functions ---
+
 def generate_key():
     return Fernet.generate_key()
 
@@ -12,9 +14,7 @@ def encrypt_file(file_path, key):
     fernet = Fernet(key)
     with open(file_path, 'rb') as file:
         file_data = file.read()
-    
     encrypted_data = fernet.encrypt(file_data)
-    
     with open(file_path, 'wb') as file:
         file.write(encrypted_data)
 
@@ -22,13 +22,10 @@ def decrypt_file(file_path, key):
     fernet = Fernet(key)
     with open(file_path, 'rb') as file:
         encrypted_data = file.read()
-    
     decrypted_data = fernet.decrypt(encrypted_data)
-    
     decrypted_file_path = file_path.replace(".json", "_decrypted.json")
     with open(decrypted_file_path, 'wb') as file:
         file.write(decrypted_data)
-
     return decrypted_file_path
 
 def deidentify_PHI_with_mapping(text):
@@ -88,16 +85,13 @@ def deidentify_PHI_with_mapping(text):
 
 def reidentify_PHI(de_identified_text, phi_map):
     reidentified_text = de_identified_text
-
     for key, value in phi_map.items():
         placeholder = f'*{key}*'
-
         if isinstance(value, list):
             for item in value:
                 reidentified_text = reidentified_text.replace(placeholder, item, 1)
         else:
             reidentified_text = reidentified_text.replace(placeholder, value)
-
     return reidentified_text
 
 def generate_mapping_filename(ehr_file: str, ext: str = 'json') -> str:
@@ -105,15 +99,17 @@ def generate_mapping_filename(ehr_file: str, ext: str = 'json') -> str:
     shortid = uuid.uuid4().hex[:4]
     return f"{base_name}_Mapping_{shortid}.{ext}"
 
-def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file=None):
-    key = generate_key()
+# --- Main Processing ---
+
+def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file=None, key=None):
+    if key is None:
+        key = generate_key()
     
     with open(ehr_file, 'r') as file:
         text = file.read()
 
     if de_identify:
         deidentified_text, phi_map = deidentify_PHI_with_mapping(text)
-
         deidentified_filename = f"De-Identified_{Path(ehr_file).name}"
         with open(deidentified_filename, 'w') as file:
             file.write(deidentified_text)
@@ -134,20 +130,15 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
     if re_identify:
         if mapping_file is None:
             raise ValueError("Mapping file is required for re-identification")
-
         decrypted_mapping_file = decrypt_file(mapping_file, key)
-
         with open(decrypted_mapping_file, 'r') as file:
             phi_map = json.load(file)
 
-        if not de_identify:
-            deidentified_filename = ehr_file
-            with open(deidentified_filename, 'r') as file:
-                deidentified_text = file.read()
+        with open(ehr_file, 'r') as file:
+            deidentified_text = file.read()
 
         reidentified_text = reidentify_PHI(deidentified_text, phi_map)
-
-        reidentified_filename = f"Re-Identified_{ehr_file.replace('De-Identified_', '')}"
+        reidentified_filename = f"Re-Identified_{Path(ehr_file).name.replace('De-Identified_', '')}"
         with open(reidentified_filename, 'w') as file:
             file.write(reidentified_text)
 
@@ -159,21 +150,60 @@ def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file
 
         return reidentified_filename
 
+# --- Gradio Interfaces ---
+
 def deidentify_interface(file):
     try:
-        deidentified_file, _, _ = process_ehr_file(file.name, de_identify=True)
-        return deidentified_file, "✅ De-identification successful!"
+        deidentified_file, mapping_file, key = process_ehr_file(file.name, de_identify=True)
+        return deidentified_file, mapping_file, key.decode(), "✅ De-identification successful!"
+    except Exception as e:
+        return None, None, None, f"❌ Error: {str(e)}"
+
+def reidentify_interface(deidentified_file, mapping_file, key_text):
+    try:
+        key = key_text.encode()
+        reidentified_file = process_ehr_file(
+            deidentified_file.name,
+            de_identify=False,
+            re_identify=True,
+            mapping_file=mapping_file.name,
+            key=key
+        )
+        return reidentified_file, "✅ Re-identification successful!"
     except Exception as e:
         return None, f"❌ Error: {str(e)}"
 
-demo = gr.Interface(
+# --- Gradio UI ---
+
+deidentify_demo = gr.Interface(
     fn=deidentify_interface,
     inputs=gr.File(label="Upload your EHR file"),
-    outputs=[gr.File(label="Download De-identified File"), gr.Textbox(label="Status")],
-    title="EHR PHI De-identifier",
-    description="Upload a file and get a de-identified version with mapped PHI removed."
+    outputs=[
+        gr.File(label="Download De-identified File"),
+        gr.File(label="Download Encrypted Mapping File"),
+        gr.Textbox(label="Decryption Key (save this!)"),
+        gr.Textbox(label="Status")
+    ],
+    title="EHR PHI De-Identifier",
+    description="Upload a file and get a de-identified version with PHI mapping encrypted."
 )
 
-if __name__ == "__main__":
-    demo.launch()
+reidentify_demo = gr.Interface(
+    fn=reidentify_interface,
+    inputs=[
+        gr.File(label="Upload De-identified EHR File"),
+        gr.File(label="Upload Encrypted Mapping File"),
+        gr.Textbox(label="Enter Decryption Key")
+    ],
+    outputs=[
+        gr.File(label="Download Re-identified File"),
+        gr.Textbox(label="Status")
+    ],
+    title="EHR PHI Re-Identifier",
+    description="Restore original PHI using encrypted mapping and decryption key."
+)
 
+demo = gr.TabbedInterface([deidentify_demo, reidentify_demo], ["De-Identify EHR", "Re-Identify EHR"])
+
+if __name__ == "__main__":
+    demo.launch(share=True)
