@@ -1,33 +1,45 @@
 import re
 import json
-from pathlib import Path
 import uuid
+import zipfile
+import shutil
+from pathlib import Path
+from base64 import urlsafe_b64encode
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.backends import default_backend
 from cryptography.fernet import Fernet
 import gradio as gr
+from typing import Tuple
 
-# --- PHI Handling Functions ---
+backend = default_backend()
 
-def generate_key():
-    return Fernet.generate_key()
+# --- Utility Functions ---
+def derive_key(password: str, salt: bytes, iterations: int = 100000) -> bytes:
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=iterations,
+        backend=backend
+    )
+    return urlsafe_b64encode(kdf.derive(password.encode()))
 
-def encrypt_file(file_path, key):
+def encrypt_mapping(mapping: dict, password: str) -> Tuple[bytes, bytes]:
+    salt = uuid.uuid4().bytes
+    key = derive_key(password, salt)
     fernet = Fernet(key)
-    with open(file_path, 'rb') as file:
-        file_data = file.read()
-    encrypted_data = fernet.encrypt(file_data)
-    with open(file_path, 'wb') as file:
-        file.write(encrypted_data)
+    data = json.dumps(mapping).encode()
+    encrypted = fernet.encrypt(data)
+    return encrypted, salt
 
-def decrypt_file(file_path, key):
+def decrypt_mapping(encrypted_data: bytes, salt: bytes, password: str) -> dict:
+    key = derive_key(password, salt)
     fernet = Fernet(key)
-    with open(file_path, 'rb') as file:
-        encrypted_data = file.read()
-    decrypted_data = fernet.decrypt(encrypted_data)
-    decrypted_file_path = file_path.replace(".json", "_decrypted.json")
-    with open(decrypted_file_path, 'wb') as file:
-        file.write(decrypted_data)
-    return decrypted_file_path
+    decrypted = fernet.decrypt(encrypted_data)
+    return json.loads(decrypted)
 
+# --- PHI Functions ---
 def deidentify_PHI_with_mapping(text):
     phi_map = {}
 
@@ -94,116 +106,108 @@ def reidentify_PHI(de_identified_text, phi_map):
             reidentified_text = reidentified_text.replace(placeholder, value)
     return reidentified_text
 
-def generate_mapping_filename(ehr_file: str, ext: str = 'json') -> str:
-    base_name = Path(ehr_file).stem.replace(' ', '_') 
-    shortid = uuid.uuid4().hex[:4]
-    return f"{base_name}_Mapping_{shortid}.{ext}"
+# --- File Handling ---
+def package_zip(deidentified_text: str, encrypted_mapping: bytes, salt: bytes, base_name: str) -> Path:
+    temp_dir = Path("temp") / uuid.uuid4().hex[:6]
+    temp_dir.mkdir(parents=True)
 
-# --- Main Processing ---
+    deid_path = temp_dir / f"{base_name}_Deidentified.txt"
+    mapping_path = temp_dir / "EncryptedMapping.bin"
+    salt_path = temp_dir / "Salt.bin"
 
-def process_ehr_file(ehr_file, de_identify=True, re_identify=False, mapping_file=None, key=None):
-    if key is None:
-        key = generate_key()
-    
-    with open(ehr_file, 'r') as file:
-        text = file.read()
+    deid_path.write_text(deidentified_text)
+    mapping_path.write_bytes(encrypted_mapping)
+    salt_path.write_bytes(salt)
 
-    if de_identify:
-        deidentified_text, phi_map = deidentify_PHI_with_mapping(text)
-        deidentified_filename = f"De-Identified_{Path(ehr_file).name}"
-        with open(deidentified_filename, 'w') as file:
-            file.write(deidentified_text)
+    zip_path = Path(f"{base_name}_DeidBundle.zip")
+    with zipfile.ZipFile(zip_path, 'w') as zf:
+        zf.write(deid_path, arcname=deid_path.name)
+        zf.write(mapping_path, arcname=mapping_path.name)
+        zf.write(salt_path, arcname=salt_path.name)
 
-        if mapping_file is None:
-            mapping_file = generate_mapping_filename(ehr_file)
+    shutil.rmtree(temp_dir)
+    return zip_path
 
-        with open(mapping_file, 'w') as file:
-            json.dump(phi_map, file, indent=2)
+def extract_zip(zip_file: Path) -> dict:
+    temp_dir = Path("temp") / uuid.uuid4().hex[:6]
+    temp_dir.mkdir(parents=True)
 
-        encrypt_file(mapping_file, key)
+    with zipfile.ZipFile(zip_file, 'r') as zf:
+        zf.extractall(temp_dir)
 
-        print(f"De-identification complete. Output saved to {deidentified_filename}")
-        print(f"PHI mapping saved to {mapping_file} (encrypted)")
+    deid_file = next(temp_dir.glob("*_Deidentified.txt"))
+    mapping_file = temp_dir / "EncryptedMapping.bin"
+    salt_file = temp_dir / "Salt.bin"
 
-        return deidentified_filename, mapping_file, key
-
-    if re_identify:
-        if mapping_file is None:
-            raise ValueError("Mapping file is required for re-identification")
-        decrypted_mapping_file = decrypt_file(mapping_file, key)
-        with open(decrypted_mapping_file, 'r') as file:
-            phi_map = json.load(file)
-
-        with open(ehr_file, 'r') as file:
-            deidentified_text = file.read()
-
-        reidentified_text = reidentify_PHI(deidentified_text, phi_map)
-        reidentified_filename = f"Re-Identified_{Path(ehr_file).name.replace('De-Identified_', '')}"
-        with open(reidentified_filename, 'w') as file:
-            file.write(reidentified_text)
-
-        Path(decrypted_mapping_file).unlink()
-        Path(mapping_file).unlink()
-        
-        print(f"Re-identification complete. Output saved to {reidentified_filename}")
-        print(f"Mapping file {decrypted_mapping_file} and {mapping_file} deleted.")
-
-        return reidentified_filename
+    return {
+        "deid_path": deid_file,
+        "mapping_path": mapping_file,
+        "salt_path": salt_file,
+        "temp_dir": temp_dir
+    }
 
 # --- Gradio Interfaces ---
-
-def deidentify_interface(file):
+def deidentify_interface(file: gr.File, password):
     try:
-        deidentified_file, mapping_file, key = process_ehr_file(file.name, de_identify=True)
-        return deidentified_file, mapping_file, key.decode(), "✅ De-identification successful!"
+        with open(file.name, 'r') as f:
+            text = f.read()
+        deid_text, phi_map = deidentify_PHI_with_mapping(text)
+        encrypted_map, salt = encrypt_mapping(phi_map, password)
+
+        base_name = Path(file.name).stem.replace(" ", "_")
+        zip_path = package_zip(deid_text, encrypted_map, salt, base_name)
+        return str(zip_path), "✅ De-identification complete!"
     except Exception as e:
-        return None, None, None, f"❌ Error: {str(e)}"
+        return None, f"❌ Error: {str(e)}"
 
-def reidentify_interface(deidentified_file, mapping_file, key_text):
+def reidentify_interface(zip_file, password):
     try:
-        key = key_text.encode()
-        reidentified_file = process_ehr_file(
-            deidentified_file.name,
-            de_identify=False,
-            re_identify=True,
-            mapping_file=mapping_file.name,
-            key=key
-        )
-        return reidentified_file, "✅ Re-identification successful!"
+        paths = extract_zip(Path(zip_file.name))
+        deid_text = paths["deid_path"].read_text()
+        encrypted_map = paths["mapping_path"].read_bytes()
+        salt = paths["salt_path"].read_bytes()
+
+        phi_map = decrypt_mapping(encrypted_map, salt, password)
+        reid_text = reidentify_PHI(deid_text, phi_map)
+
+        reid_path = Path(f"Reidentified_{paths['deid_path'].name}")
+        reid_path.write_text(reid_text)
+
+        shutil.rmtree(paths['temp_dir'])
+        return str(reid_path), "✅ Re-identification complete!"
     except Exception as e:
         return None, f"❌ Error: {str(e)}"
 
 # --- Gradio UI ---
-
-deidentify_demo = gr.Interface(
+deid_ui = gr.Interface(
     fn=deidentify_interface,
-    inputs=gr.File(label="Upload your EHR file"),
+    inputs=[
+        gr.File(label="Upload EHR File"),
+        gr.Textbox(label="Set a Password", type="password")
+    ],
     outputs=[
-        gr.File(label="Download De-identified File"),
-        gr.File(label="Download Encrypted Mapping File"),
-        gr.Textbox(label="Decryption Key (save this!)"),
+        gr.File(label="Download De-Identification Bundle (.zip)"),
         gr.Textbox(label="Status")
     ],
-    title="EHR PHI De-Identifier",
-    description="Upload a file and get a de-identified version with PHI mapping encrypted."
+    title="Secure EHR De-Identifier",
+    description="Upload your EHR file and set a password to download an encrypted .zip with de-identified data."
 )
 
-reidentify_demo = gr.Interface(
+reid_ui = gr.Interface(
     fn=reidentify_interface,
     inputs=[
-        gr.File(label="Upload De-identified EHR File"),
-        gr.File(label="Upload Encrypted Mapping File"),
-        gr.Textbox(label="Enter Decryption Key")
+        gr.File(label="Upload De-Identification Bundle (.zip)"),
+        gr.Textbox(label="Enter Password", type="password")
     ],
     outputs=[
-        gr.File(label="Download Re-identified File"),
+        gr.File(label="Download Re-Identified File"),
         gr.Textbox(label="Status")
     ],
-    title="EHR PHI Re-Identifier",
-    description="Restore original PHI using encrypted mapping and decryption key."
+    title="Secure EHR Re-Identifier",
+    description="Upload the encrypted .zip bundle and enter the password to recover original PHI."
 )
 
-demo = gr.TabbedInterface([deidentify_demo, reidentify_demo], ["De-Identify EHR", "Re-Identify EHR"])
+demo = gr.TabbedInterface([deid_ui, reid_ui], ["De-Identify", "Re-Identify"])
 
 if __name__ == "__main__":
     demo.launch(share=True)
