@@ -45,38 +45,60 @@ def decrypt_mapping(encrypted_data: bytes, salt: bytes, password: str) -> dict:
 # %% --- PHI Redaction ---
 def deidentify_PHI_with_mapping(text):
     phi_map = {}
-
+    
     def replace_and_map(pattern, replacement_template, key, text, value_group=None, flags=0):
         matches = []
-
+        
         def replace_func(match):
             original = match.group(value_group) if value_group else match.group(0)
             matches.append(original)
             return replacement_template
-
+        
         new_text = re.sub(pattern, replace_func, text, flags=flags)
-
+        
         if matches:
             if key in phi_map and isinstance(phi_map[key], list):
                 phi_map[key].extend(matches)
             else:
                 phi_map[key] = matches if len(matches) > 1 else matches[0]
-
+        
         return new_text
-
-    # De-identifies full Patient name in "Patient name:" format
-    text = replace_and_map(r'(?i)Patient name:\s*(.*)', 'Patient name: *name*', 'name', text, value_group=1)
-
-    # De-identifies Allergy section
-    text = replace_and_map(
-        r'(?i)Allergies:\s*\n((?:-.*(?:\n|$))+)',
-        'Allergies: *allergies*',
-        'allergies',
-        text,
-        value_group=1,
-        flags=re.MULTILINE
-    )
-
+    
+    # Process structured format identifiers first
+    text = replace_and_map(r'(?i)Patient:\s*(.*?)(?=\n|$)', 'Patient: *patient_label*', 'patient_label', text, value_group=1)
+    text = replace_and_map(r'Provider:\s*(?:Dr\.|Ms\.|Mr\.)?\s*([A-Z][a-z]+ [A-Z][a-z]+)(?:,\s*MD)?', 
+                       'Provider: *provider_name*, MD', 
+                       'provider_name', 
+                       text, 
+                       value_group=1)
+    
+    # Process patient name mentions in the text body with explicit matching of full patterns
+    if 'patient_label' in phi_map:
+        patient_surname = phi_map['patient_label'].split()[-1]
+        # Store common patient references before replacing them
+        patient_refs = []
+        
+        def collect_patient_refs(match):
+            patient_refs.append(match.group(0))
+            return '*patient_reference*'
+            
+        # Match both "Mr. Smith" pattern and other references
+        text = re.sub(fr'Mr\.\s*{patient_surname}\b', collect_patient_refs, text)
+        
+        # Add the collected references to phi_map
+        if patient_refs:
+            phi_map['patient_reference'] = patient_refs
+    
+    # Process remaining patterns
+    text = replace_and_map(r'(?i)Patient name:\s*(.*)', 'Patient name: *full_name*', 'full_name', text, value_group=1)
+    
+    # Handle honorifics with full names separately from honorifics with last names
+    text = replace_and_map(r'(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+ [A-Z][a-z]+', '*full_honorific_name*', 'full_honorific_name', text)
+    text = replace_and_map(r'\b(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s+([A-Z][a-z]+)\b', '*title_surname*', 'title_surname', text)
+    
+    # Continue with the rest of the patterns
+    text = replace_and_map(r'(?i)Allergies:\s*\n((?:-.*(?:\n|$))+)', 'Allergies: *allergies*', 'allergies', text, value_group=1, flags=re.MULTILINE)
+    
     # De-identifies Social History
     text = replace_and_map(
         r'(?i)Social History:\s*((?:.|\n)*?)(?=\n[A-Z][a-z]+:|\Z)',
@@ -87,23 +109,11 @@ def deidentify_PHI_with_mapping(text):
         flags=re.DOTALL
     )
 
-    # De-identifies Patient label (e.g., "Patient: John Doe")
-    text = replace_and_map(r'(?i)Patient:\s*(.*)', 'Patient: *name*', 'name', text, value_group=1)
-
-    # De-identifies full names like "Dr. John Smith"
-    text = replace_and_map(r'(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+ [A-Z][a-z]+', '*name*', 'name', text)
-
-    # De-identifies single honorific names like "Dr. Smith"
-    text = replace_and_map(r'(?:^|\s)(?:Mr\.|Mrs\.|Ms\.|Dr\.)\s*[A-Z][a-z]+', '*name*', 'name', text)
-
     # De-identifies short "Ms. Jane" format
     text = replace_and_map(r'Ms\.\s*([A-Z][a-z]+)', '*name*', 'name', text, value_group=1)
 
     # De-identifies Medical Record Numbers
     text = replace_and_map(r'(?i)Medical record number:\s*([A-Z0-9\-]+)', 'Medical record number: *mrn*', 'mrn', text, value_group=1)
-
-    # De-identifies provider name
-    text = replace_and_map(r'Provider:\s*(?:Dr\.|Ms\.|Mr\.)?\s*([A-Z][a-z]+ [A-Z][a-z]+)', 'Provider: *provider_name*, MD', 'provider_name', text, value_group=1)
 
     # De-identifies social worker names
     text = replace_and_map(r'Social Worker:\s*(?:Dr\.|Ms\.|Mr\.)?\s*([A-Z][a-z]+ [A-Z][a-z]+)', '\nSocial Worker: *social_worker_name*', 'social_worker_name', text, value_group=1)
@@ -118,7 +128,13 @@ def deidentify_PHI_with_mapping(text):
     text = replace_and_map(r'\b(\d{2}/\d{2}/\d{4})\b', '*date*', 'date', text, value_group=1)
 
     # De-identifies SSNs
-    text = replace_and_map(r'SSN:\s*([*\d]{3}-[*\d]{2}-[*\d]{4})', 'SSN: *ssn*', 'ssn', text, value_group=1)
+    text = replace_and_map(
+        r'(?i)SSN:\s*((?:[*\d]+-){2}[*\d]+)', 
+        'SSN: *ssn*', 
+        'ssn', 
+        text, 
+        value_group=1
+    )
 
     # De-identifies phone numbers
     text = replace_and_map(r'Phone:\s*(\d{3}[-\s]?\d{3}[-\s]?\d{4})', 'Phone: *phone_number*', 'phone_number', text, value_group=1)
