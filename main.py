@@ -168,7 +168,10 @@ def reidentify_interface(zip_file, password):
         phi_map = decrypt_mapping(encrypted_map, salt, password)
         reid_text = reidentify_PHI(deid_text, phi_map)
 
-        output_path = Path(tempfile.NamedTemporaryFile(delete=False, suffix=".txt").name)
+        original_name = Path(paths["deid_path"]).name.replace("De-Identified_", "")
+        output_name = f"Re-Identified_{original_name}"
+        output_dir = Path(tempfile.mkdtemp())
+        output_path = output_dir / output_name
         output_path.write_text(reid_text)
 
         shutil.rmtree(paths["temp_dir"])
