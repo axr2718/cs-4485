@@ -12,7 +12,9 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.fernet import Fernet
 import gradio as gr
 from typing import Tuple
-
+from datetime import datetime
+import pandas as pd
+import time
 backend = default_backend()
 
 # --- Key Derivation ---
@@ -290,7 +292,11 @@ def extract_zip(zip_file: Path) -> dict:
         "temp_dir": temp_dir
     }
 
-def deidentify_interface(file: gr.File, password: str):
+def deidentify_interface(file: gr.File, username: str, password: str):
+    if username == "":
+        return "", None, None, "", "❌ Invalid username"
+    
+    start_time = time.time()
     try:
         original_name = Path(file.name).name
         base_name = Path(file.name).stem.replace(' ', '_')
@@ -299,7 +305,6 @@ def deidentify_interface(file: gr.File, password: str):
             text = f.read()
 
         deid_text, phi_map = deidentify_PHI_with_mapping(text)
-        # (Optional) adjust formatting in the de-identified text preview as well.
 
         temp_dir = Path(tempfile.mkdtemp())
         deid_filename = f"De-Identified_{original_name}"
@@ -312,12 +317,42 @@ def deidentify_interface(file: gr.File, password: str):
             zip_path = temp_dir / f"{base_name}_DeidBundle.zip"
             package_zip_to_path(deid_text, encrypted_map, salt, zip_path, original_name)
 
-        instructions = "⬇ Click the file name or blue text to download. Use the .zip bundle only if re-identification is needed."
-        return deid_text, str(deid_temp_path), str(zip_path) if zip_path else None, instructions, "✅ De-Identification complete!"
-    except Exception as e:
-        return "", None, None, "", f"❌ Error: {str(e)}"
+        execution_time = time.time() - start_time
+        
+        # Log the request with execution time
+        df = pd.read_csv("user_logs.csv")
+        new_row = pd.DataFrame([{
+            "Username": username,
+            "Timestamp": datetime.now(),
+            "Action": "De-Identification Request",
+            "Filename": file.name.split('/')[-1],
+            "Execution Time": f"{execution_time:.2f}"
+        }])
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv("user_logs.csv", index=False)
 
-def reidentify_interface(zip_file, password):
+        instructions = "⬇ Click the file name or blue text to download. Use the .zip bundle only if re-identification is needed."
+        return deid_text, str(deid_temp_path), str(zip_path) if zip_path else None, instructions, f"✅ De-Identification complete! (Execution time: {execution_time:.2f}s)"
+    except Exception as e:
+        execution_time = time.time() - start_time
+        # Log the failed request
+        df = pd.read_csv("user_logs.csv")
+        new_row = pd.DataFrame([{
+            "Username": username,
+            "Timestamp": datetime.now(),
+            "Action": "De-Identification Request (Failed)",
+            "Filename": file.name.split('/')[-1],
+            "Execution Time": f"{execution_time:.2f} seconds"
+        }])
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv("user_logs.csv", index=False)
+        return "", None, None, "", f"❌ Error: {str(e)} (Execution time: {execution_time:.2f}s)"
+
+def reidentify_interface(zip_file, username, password):
+    if username == "":
+        return "", None, "❌ Invalid username"
+    
+    start_time = time.time()
     try:
         paths = extract_zip(Path(zip_file.name))
         deid_text = paths["deid_path"].read_text()
@@ -333,16 +368,64 @@ def reidentify_interface(zip_file, password):
         output_path = output_dir / output_name
         output_path.write_text(reid_text)
 
+        execution_time = time.time() - start_time
+        
+        # Log the request with execution time
+        df = pd.read_csv("user_logs.csv")
+        new_row = pd.DataFrame([{
+            "Username": username,
+            "Timestamp": datetime.now(),
+            "Action": "Re-Identification Request",
+            "Filename": (zip_file.name).split('/')[-1],
+            "Execution Time": f"{execution_time:.2f}"
+        }])
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv("user_logs.csv", index=False)
+
         shutil.rmtree(paths["temp_dir"])
-        return reid_text, str(output_path), "✅ Re-Identification complete!"
+        return reid_text, str(output_path), f"✅ Re-Identification complete! (Execution time: {execution_time:.2f}s)"
     except Exception as e:
-        return "", None, f"❌ Error: {str(e)}"
+        execution_time = time.time() - start_time
+        # Log the failed request
+        df = pd.read_csv("user_logs.csv")
+        new_row = pd.DataFrame([{
+            "Username": username,
+            "Timestamp": datetime.now(),
+            "Action": "Re-Identification Request (Failed)",
+            "Filename": (zip_file.name).split('/')[-1],
+            "Execution Time": f"{execution_time:.2f}"
+        }])
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv("user_logs.csv", index=False)
+        return "", None, f"❌ Error: {str(e)} (Execution time: {execution_time:.2f}s)"
+
+def deidentify_log(name, password):
+    #open file containing approved username and password
+    with open("approved_users.txt", "r") as f:
+        approved_users = f.readlines()
+    #check if username and password are in the approved_users list
+    if f"{name} {password}" in approved_users:
+        #log the request
+        df = pd.read_csv("user_logs.csv")
+        new_row = pd.DataFrame([{
+            "Username": name,
+            "Timestamp": datetime.now(),
+            "Action": "Logs Request",
+            "Filename": "User_Logs.csv",
+            "Execution Time": 0.0,
+        }])
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv("user_logs.csv", index=False)
+        return df.to_string(), "user_logs.csv", "✅ Approved user"
+    else:
+        return f"❌ Invalid username or password", None, None
 
 deid_ui = gr.Interface(
     fn=deidentify_interface,
     inputs=[
         gr.File(label="📄 Upload EHR File"),
-        gr.Textbox(label="🔐 Set Password (for re-identification if needed)", type="password", placeholder="Leave blank if not needed")
+        gr.Textbox(label="Identification Name", type="text", placeholder="Enter your Name", value=""),
+        gr.Textbox(label="🔐 Set Password (for re-identification if needed)", type="password", placeholder="Leave blank if not needed", value=""),
     ],
     outputs=[
         gr.Textbox(label="📝 De-Identified Text (Preview)", lines=15),
@@ -359,7 +442,8 @@ reid_ui = gr.Interface(
     fn=reidentify_interface,
     inputs=[
         gr.File(label="📦 Upload De-Identification Bundle (.zip)"),
-        gr.Textbox(label="🔐 Enter Password", type="password")
+        gr.Textbox(label="Username", type="text", placeholder="Enter your Username"),
+        gr.Textbox(label="🔐 Enter Password", type="password", placeholder="Enter your Password")
     ],
     outputs=[
         gr.Textbox(label="📝 Re-Identified Text (Preview)", lines=15),
@@ -370,7 +454,25 @@ reid_ui = gr.Interface(
     description="Recover original PHI from an encrypted bundle using your password."
 )
 
-demo = gr.TabbedInterface([deid_ui, reid_ui], ["De-Identify", "Re-Identify"])
+log_ui = gr.Interface(
+    fn=deidentify_log,
+    inputs=[
+        gr.Textbox(label="Username", type="text", placeholder="Enter your Username"),
+        gr.Textbox(label="🔐 Password", type="password", placeholder="Enter your Password")
+    ],
+    outputs=[
+        gr.Textbox(label=" 📝 Log preview", lines=15),
+        gr.File(label="⬇ Download Logs"),
+        gr.Textbox(label="✅ Status")
+    ],
+    title="Log file Request",
+    description="View the logs of de-identification requests."
+)
+
+
+demo = gr.TabbedInterface([deid_ui, reid_ui, log_ui], ["De-Identify", "Re-Identify", "Log file Request"])
 
 if __name__ == "__main__":
+    if not Path("user_logs.csv").exists():
+        pd.DataFrame(columns=["Username", "Timestamp", "Action", "Filename", "Execution Time"]).to_csv("user_logs.csv", index=False)
     demo.launch(share=True)
