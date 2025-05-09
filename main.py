@@ -346,7 +346,7 @@ def deidentify_interface(file: gr.File, username: str, password: str):
         }])
         df = pd.concat([df, new_row], ignore_index=True)
         df.to_csv("user_logs.csv", index=False)
-        return "", None, None, "", f"❌ Error: {str(e)} (Execution time: {execution_time:.2f}s)"
+        return f"❌ Invalid username or password", None, None, "", f"❌ Error: {str(e)} (Execution time: {execution_time:.2f}s)"
 
 def reidentify_interface(zip_file, username, password):
     if username == "":
@@ -397,7 +397,7 @@ def reidentify_interface(zip_file, username, password):
         }])
         df = pd.concat([df, new_row], ignore_index=True)
         df.to_csv("user_logs.csv", index=False)
-        return "", None, f"❌ Error: {str(e)} (Execution time: {execution_time:.2f}s)"
+        return f"❌ Invalid username or password", None, f"❌ Error: {str(e)} (Execution time: {execution_time:.2f}s)"
 
 def deidentify_log(name, password):
     #open file containing approved username and password

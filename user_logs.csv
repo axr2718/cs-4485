@@ -2,3 +2,5 @@ Username,Timestamp,Action,Filename,Execution Time
 Arrio,2025-04-24 11:32:34.758425,De-Identification Request,ehr JMS.txt,0.11 seconds
 Arrio,2025-04-24 11:33:27.691215,Re-Identification Request,ehr_JMS_DeidBundle.zip,0.09
 chen,2025-04-24 11:33:51.534971,Logs Request,User_Logs.csv,0.0
+chen,2025-05-08 21:46:41.075643,De-Identification Request,ehr JMS.txt,0.12
+chen,2025-05-08 21:47:51.562090,Re-Identification Request (Failed),De-Identified_ehr JMS.txt,0.00
